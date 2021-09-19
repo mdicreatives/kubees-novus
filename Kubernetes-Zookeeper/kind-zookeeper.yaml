@@ -1,0 +1,55 @@
+--- 
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  labels: 
+    app: bigdata-zookeeper-app
+  name: mdi-zookeeper
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: bigdata-zookeeper-app
+  template: 
+    metadata: 
+      labels: 
+        app: bigdata-zookeeper-app
+    spec: 
+      containers: 
+        - 
+          env: 
+            - 
+              name: ZOOKEEPER_ID
+              value: "1"
+            - 
+              name: ZOOKEEPER_SERVER_1
+              value: bigdata-zookeeper-container
+          image: "localhost:5000/mdi-zookeeper:latest"
+          name: bigdata-zookeeper-container
+          ports: 
+            - 
+              containerPort: 2181
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  labels: 
+    app: bigdata-zookeeper-app
+  name: bigdata-zookeeper-container
+spec: 
+  ports: 
+    - 
+      name: client
+      port: 2181
+      protocol: TCP
+    - 
+      name: follower
+      port: 2888
+      protocol: TCP
+    - 
+      name: leader
+      port: 3888
+      protocol: TCP
+  selector: 
+      app: bigdata-zookeeper-app
+
